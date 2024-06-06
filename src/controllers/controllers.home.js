@@ -1,5 +1,7 @@
+import { config } from "dotenv";
+config();
+
 export const home = (req, res) =>{
-    // res.send("home");
     res.render("views.home.ejs");
 };
 export const contact = (req, res) =>{
@@ -10,4 +12,11 @@ export const galery = (req, res) =>{
 };
 export const about = (req, res) =>{
     res.send("about");
+};
+export const login = (req, res) =>{
+    const url = process.env.BACKEND_URL;
+    const options= {
+        url : url
+    };
+    res.render("views.login.ejs", options);
 };

@@ -11,6 +11,7 @@ server.set('view engine', 'ejs');
 server.set("views", path.join(__dirname,"views"));
 server.set("port", process.env.PORT || 3000);
 server.use(express.static(path.join(__dirname,"public")))
+
 // rutas
 server.use("/", ruta);
 
