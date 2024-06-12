@@ -8,7 +8,7 @@ export const contact = (req, res) =>{
     res.render("views.contact.ejs");
 };
 export const galery = (req, res) =>{
-    res.send("galery");
+    res.render("views.gallery.ejs");
 };
 export const about = (req, res) =>{
     res.send("about");
