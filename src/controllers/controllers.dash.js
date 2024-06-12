@@ -1,3 +1,8 @@
+import { config } from "dotenv";
+config();
 export const presentacion = (req, res)=>{
-    res.render("views.dash.ejs");
+    
+    const tpk = process.env.TOKEN_PRIVATEKEY;
+
+    res.render("views.dash.ejs", { tpk : tpk });
 }
