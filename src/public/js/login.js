@@ -24,7 +24,7 @@ const loguear = async()=>{
             alertify.error("Clave errada");
         }else{
             sessionStorage.setItem("token", data.body.token);
-            console.log(data);
+            window.location.href="/dash";
         }
     })
     .catch(err=>{
