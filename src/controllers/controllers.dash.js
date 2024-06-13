@@ -1,8 +1,11 @@
-import { config } from "dotenv";
-config();
-export const presentacion = (req, res)=>{
+/**
+ * Presentacion inicial del dashboard
+ * @param {object} req Peticion http
+ * @param {object} res respuesta http
+ */
+const presentacion = (req, res)=>{
     
-    const tpk = process.env.TOKEN_PRIVATEKEY;
-
-    res.render("views.dash.ejs", { tpk : tpk });
+    res.render("views.dash.ejs");
 }
+
+export { presentacion };

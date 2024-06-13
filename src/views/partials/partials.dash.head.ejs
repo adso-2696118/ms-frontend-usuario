@@ -27,14 +27,12 @@
   <![endif]-->
 
     <!-- Google Font -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
-    <!-- Validar token -->
-    </head>
+</head>
 
 <body class="hold-transition skin-blue sidebar-mini">
-    <input type="hidden" id="tpk" value=<%= tpk %> >
+
     <!-- Site wrapper -->
     <div class="wrapper">
 
@@ -77,21 +75,8 @@
                 </div>
             </nav>
             <script>
-        
-                const tpk = document.getElementById("tpk").value;
-                const token = sessionStorage.getItem("token");
-        
-                if(token=="" || token==null){
-                    window.location.href="/login";
-                    console.log("1");
-                }
-                const dec = jwt.verify(token, tpk)
-                console.log(dec);
-                // try {
-                // } catch (error) {
-                //     window.location.href="/login";
-                    console.log("2");
-                // }
-        
+
+
+
             </script>
         </header>
