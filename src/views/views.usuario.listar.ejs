@@ -32,7 +32,26 @@
                 </div>
             </div>
             <div class="box-body">
-                Start creating your amazing application!
+                <table border="1">
+                    <tr>
+                        <td>Id</td>
+                        <td>Nombre</td>
+                        <td>Usuario</td>
+                        <td>opciones</td>
+                    </tr>
+                    <% datos.forEach(element => { %>
+                        <tr>
+                            <td><%= element.ID %></td>
+                            <td><%= element.nombre %></td>
+                            <td><%= element.USUARIO %></td>
+                            <td>
+                                <button>Modificar</button>
+                                <button>Eliminar</button>
+                                <button>Reporte</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </table>
             </div>
             <!-- /.box-body -->
             <div class="box-footer">

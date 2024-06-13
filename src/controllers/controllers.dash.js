@@ -1,3 +1,11 @@
+import { config } from "dotenv";
+config();
+
+/**
+ * almacena la url del backend
+ * @type {string}
+ */
+const url = process.env.BACKEND_URL;
 /**
  * Presentacion inicial del dashboard
  * @param {object} req Peticion http
@@ -9,7 +17,15 @@ const presentacion = (req, res)=>{
 }
 
 const listarUsuarios = (req, res) => {
-    res.render("views.usuario.listar.ejs");
+    let datos = "";
+    const recurso = url + "/api/user"
+    fetch(recurso)
+    .then(res=>res.json())
+    .then(data=>{
+        datos = data.body[0];
+        res.render("views.usuario.listar.ejs", {datos:datos});
+    })
+    
 }
 
 export { presentacion, listarUsuarios };
