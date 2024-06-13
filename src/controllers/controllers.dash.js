@@ -27,5 +27,8 @@ const listarUsuarios = (req, res) => {
     })
     
 }
+const crearUsuarios = (req, res) => {
+    res.render("views.usuario.crear.ejs");
+}
 
-export { presentacion, listarUsuarios };
+export { presentacion, listarUsuarios, crearUsuarios };
