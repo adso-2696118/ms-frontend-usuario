@@ -60,7 +60,7 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="../dash/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                                <span class="hidden-xs">Alexander Pierce</span>
+                                <span id="usuario" class="hidden-xs">Alexander Pierce</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- Menu Footer-->
@@ -75,7 +75,7 @@
                 </div>
             </nav>
             <script>
-
+                const usuario = document.getElementById("usuario");
                 const token = sessionStorage.getItem("token");
                 if (token == "" || token == null){
                     window.location.href="/login"
@@ -91,13 +91,14 @@
                         'x-access-token':token
                     }
                 }
-                console.log(url);
                 fetch(url, options)
                 .then(res=>res.json())
                 .then(data=>{
                     if (data.error == true){
                         window.location.href="/login"
-                    }
+                        }
+                    // console.log(data.body);
+                    // usuario.innerText = data.body.usuario
                 })
             </script>
         </header>

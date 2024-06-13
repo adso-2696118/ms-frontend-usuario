@@ -8,4 +8,8 @@ const presentacion = (req, res)=>{
     res.render("views.dash.ejs");
 }
 
-export { presentacion };
+const listarUsuarios = (req, res) => {
+    res.render("views.usuario.listar.ejs");
+}
+
+export { presentacion, listarUsuarios };
