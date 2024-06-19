@@ -45,7 +45,9 @@
                             <td><%= element.nombre %></td>
                             <td><%= element.USUARIO %></td>
                             <td>
-                                <button>Modificar</button>
+                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-modificar">
+                                    <i class="fa fa-fw fa-edit"></i>
+                                </button>
                                 <button>Eliminar</button>
                                 <button>Reporte</button>
                             </td>
@@ -63,5 +65,48 @@
 
     </section>
     <!-- /.content -->
-
+     <!-- Modal del modificar -->
+    <div class="modal modal-warning fade" id="modal-modificar">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span></button>
+              <h4 class="modal-title">Modificar</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">N</span>
+                            <input type="text" id="nombre" class="form-control" placeholder="Nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1"></label>
+                            <input type="password" id="clave" class="form-control"
+                                placeholder="Password">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">@</span>
+                            <input type="text" id="usuario" class="form-control" placeholder="Usuario">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1"></label>
+                            <input type="email" class="form-control" id="exampleInputEmail1"
+                                placeholder="Enter email">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-outline">Guardar</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
 <%- include("partials/partials.dash.footer.ejs")  %>

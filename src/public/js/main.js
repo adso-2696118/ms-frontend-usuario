@@ -14,6 +14,7 @@ const guardar = ()=>{
 
     console.log(recurso);
     console.log(token);
+    console.log(usuario);
 
     const options = {
         method:"POST",
