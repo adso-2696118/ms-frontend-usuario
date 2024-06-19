@@ -53,7 +53,7 @@
                                     <td>
                                         <button type="button" onclick="modificar(event);" class="btn btn-warning"
                                             data-toggle="modal" data-target="#modal-modificar">
-                                            <i class="fa fa-fw fa-edit"></i>
+                                            modificar
                                         </button>
                                         <button>Eliminar</button>
                                         <button>Reporte</button>
@@ -71,6 +71,7 @@
                 <!-- /.box -->
 
             </section>
+            <input type="hidden" id="iduser">
             <!-- /.content -->
             <!-- Modal del modificar -->
             <div class="modal modal-warning fade" id="modal-modificar">
@@ -108,7 +109,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-outline">Guardar</button>
+                            <button type="button" class="btn btn-outline" onclick="guardar()">Guardar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -118,16 +119,59 @@
             <script>
 
                 const modificar = (event) => {
-                    const edit_id = event.target.parentElement.parentElement.parentElement.children[0].innerText;
-                    const edit_name = event.target.parentElement.parentElement.parentElement.children[1].innerText;
-                    const edit_user = event.target.parentElement.parentElement.parentElement.children[2].innerText;
-                    
+                    const edit_id = event.target.parentElement.parentElement.children[0].innerText;
+                    const edit_name = event.target.parentElement.parentElement.children[1].innerText;
+                    const edit_user = event.target.parentElement.parentElement.children[2].innerText;
+
                     const nombre = document.getElementById("nombre");
                     const usuario = document.getElementById("usuario");
+                    document.getElementById("iduser").value = edit_id;
 
+                    console.log(event.target.parentElement.parentElement.parentElement.children[1]);
                     nombre.value = edit_name;
                     usuario.value = edit_user;
+                }
+                const guardar = () => {
+                    // if (validarCampos() != true) {
+                    //     alert("los campos son encesario para llenar");
+                    //     return;
+                    // }
+                    const id = document.getElementById("iduser").value;
+                    const nombre = document.getElementById("nombre").value;
+                    const usuario = document.getElementById("usuario").value;
+                    const clave = document.getElementById("clave").value;
 
+                    const url = sessionStorage.getItem("urlBuho");
+                    const token = sessionStorage.getItem("token");
+                    const endpoint = "/api/user";
+                    const recurso = url + endpoint;
+
+                    console.log(recurso);
+                    console.log(token);
+                    console.log(usuario);
+
+                    const options = {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "x-access-token": token
+                        },
+                        body: JSON.stringify({
+                            id:id,
+                            nombre: nombre,
+                            usuario: usuario,
+                            clave: clave
+                        })
+                    }
+
+                    fetch(recurso, options)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.error == false) {
+                                Swal.fire(data.body);
+                                window.location.href="/dash/listar";
+                            }
+                        })
                 }
             </script>
             <%- include("partials/partials.dash.footer.ejs") %>
