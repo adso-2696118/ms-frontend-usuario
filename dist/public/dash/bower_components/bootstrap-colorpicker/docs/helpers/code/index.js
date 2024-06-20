@@ -1,6 +1,5 @@
-"use strict";
-
 var beautify = require('js-beautify').html;
+
 var entityMap = {
   "&": "&amp;",
   "<": "&lt;",
@@ -18,6 +17,7 @@ module.exports.register = function (Handlebars, options) {
     }).replace(/[&<>"'\/]/g, function (s) {
       return entityMap[s];
     });
+
     return '<div class="example-code">' + codeStr + '</div>';
   });
 };

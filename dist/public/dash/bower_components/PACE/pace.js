@@ -1,77 +1,10 @@
-"use strict";
-
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
-(function () {
-  var AjaxMonitor,
-    Bar,
-    DocumentMonitor,
-    ElementMonitor,
-    ElementTracker,
-    EventLagMonitor,
-    Evented,
-    Events,
-    NoTargetError,
-    Pace,
-    RequestIntercept,
-    SOURCE_KEYS,
-    Scaler,
-    SocketRequestTracker,
-    XHRRequestTracker,
-    animation,
-    avgAmplitude,
-    bar,
-    cancelAnimation,
-    cancelAnimationFrame,
-    defaultOptions,
-    _extend,
-    extendNative,
-    getFromDOM,
-    getIntercept,
-    handlePushState,
-    ignoreStack,
-    init,
-    now,
-    options,
-    requestAnimationFrame,
-    result,
-    runAnimation,
-    scalers,
-    shouldIgnoreURL,
-    shouldTrack,
-    source,
-    sources,
-    uniScaler,
-    _WebSocket,
-    _XDomainRequest,
-    _XMLHttpRequest,
-    _i,
-    _intercept,
-    _len,
-    _pushState,
-    _ref,
-    _ref1,
-    _replaceState,
+(function() {
+  var AjaxMonitor, Bar, DocumentMonitor, ElementMonitor, ElementTracker, EventLagMonitor, Evented, Events, NoTargetError, Pace, RequestIntercept, SOURCE_KEYS, Scaler, SocketRequestTracker, XHRRequestTracker, animation, avgAmplitude, bar, cancelAnimation, cancelAnimationFrame, defaultOptions, extend, extendNative, getFromDOM, getIntercept, handlePushState, ignoreStack, init, now, options, requestAnimationFrame, result, runAnimation, scalers, shouldIgnoreURL, shouldTrack, source, sources, uniScaler, _WebSocket, _XDomainRequest, _XMLHttpRequest, _i, _intercept, _len, _pushState, _ref, _ref1, _replaceState,
     __slice = [].slice,
     __hasProp = {}.hasOwnProperty,
-    __extends = function __extends(child, parent) {
-      for (var key in parent) {
-        if (__hasProp.call(parent, key)) child[key] = parent[key];
-      }
-      function ctor() {
-        this.constructor = child;
-      }
-      ctor.prototype = parent.prototype;
-      child.prototype = new ctor();
-      child.__super__ = parent.prototype;
-      return child;
-    },
-    __indexOf = [].indexOf || function (item) {
-      for (var i = 0, l = this.length; i < l; i++) {
-        if (i in this && this[i] === item) return i;
-      }
-      return -1;
-    };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
   defaultOptions = {
     catchupTime: 100,
     initialRate: .03,
@@ -98,38 +31,44 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       ignoreURLs: []
     }
   };
-  now = function now() {
+
+  now = function() {
     var _ref;
-    return (_ref = typeof performance !== "undefined" && performance !== null ? typeof performance.now === "function" ? performance.now() : void 0 : void 0) != null ? _ref : +new Date();
+    return (_ref = typeof performance !== "undefined" && performance !== null ? typeof performance.now === "function" ? performance.now() : void 0 : void 0) != null ? _ref : +(new Date);
   };
+
   requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
   cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+
   if (requestAnimationFrame == null) {
-    requestAnimationFrame = function requestAnimationFrame(fn) {
+    requestAnimationFrame = function(fn) {
       return setTimeout(fn, 50);
     };
-    cancelAnimationFrame = function cancelAnimationFrame(id) {
+    cancelAnimationFrame = function(id) {
       return clearTimeout(id);
     };
   }
-  runAnimation = function runAnimation(fn) {
-    var last, _tick;
+
+  runAnimation = function(fn) {
+    var last, tick;
     last = now();
-    _tick = function tick() {
+    tick = function() {
       var diff;
       diff = now() - last;
       if (diff >= 33) {
         last = now();
-        return fn(diff, function () {
-          return requestAnimationFrame(_tick);
+        return fn(diff, function() {
+          return requestAnimationFrame(tick);
         });
       } else {
-        return setTimeout(_tick, 33 - diff);
+        return setTimeout(tick, 33 - diff);
       }
     };
-    return _tick();
+    return tick();
   };
-  result = function result() {
+
+  result = function() {
     var args, key, obj;
     obj = arguments[0], key = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
     if (typeof obj[key] === 'function') {
@@ -138,7 +77,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       return obj[key];
     }
   };
-  _extend = function extend() {
+
+  extend = function() {
     var key, out, source, sources, val, _i, _len;
     out = arguments[0], sources = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
     for (_i = 0, _len = sources.length; _i < _len; _i++) {
@@ -147,8 +87,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         for (key in source) {
           if (!__hasProp.call(source, key)) continue;
           val = source[key];
-          if (out[key] != null && (0, _typeof2["default"])(out[key]) === 'object' && val != null && (0, _typeof2["default"])(val) === 'object') {
-            _extend(out[key], val);
+          if ((out[key] != null) && typeof out[key] === 'object' && (val != null) && typeof val === 'object') {
+            extend(out[key], val);
           } else {
             out[key] = val;
           }
@@ -157,7 +97,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     }
     return out;
   };
-  avgAmplitude = function avgAmplitude(arr) {
+
+  avgAmplitude = function(arr) {
     var count, sum, v, _i, _len;
     sum = count = 0;
     for (_i = 0, _len = arr.length; _i < _len; _i++) {
@@ -167,7 +108,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     }
     return sum / count;
   };
-  getFromDOM = function getFromDOM(key, json) {
+
+  getFromDOM = function(key, json) {
     var data, e, el;
     if (key == null) {
       key = 'options';
@@ -190,9 +132,11 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       return typeof console !== "undefined" && console !== null ? console.error("Error parsing inline pace options", e) : void 0;
     }
   };
-  Evented = function () {
+
+  Evented = (function() {
     function Evented() {}
-    Evented.prototype.on = function (event, handler, ctx, once) {
+
+    Evented.prototype.on = function(event, handler, ctx, once) {
       var _base;
       if (once == null) {
         once = false;
@@ -209,10 +153,12 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         once: once
       });
     };
-    Evented.prototype.once = function (event, handler, ctx) {
+
+    Evented.prototype.once = function(event, handler, ctx) {
       return this.on(event, handler, ctx, true);
     };
-    Evented.prototype.off = function (event, handler) {
+
+    Evented.prototype.off = function(event, handler) {
       var i, _ref, _results;
       if (((_ref = this.bindings) != null ? _ref[event] : void 0) == null) {
         return;
@@ -232,7 +178,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         return _results;
       }
     };
-    Evented.prototype.trigger = function () {
+
+    Evented.prototype.trigger = function() {
       var args, ctx, event, handler, i, once, _ref, _ref1, _results;
       event = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
       if ((_ref = this.bindings) != null ? _ref[event] : void 0) {
@@ -250,12 +197,19 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         return _results;
       }
     };
+
     return Evented;
-  }();
+
+  })();
+
   Pace = window.Pace || {};
+
   window.Pace = Pace;
-  _extend(Pace, Evented.prototype);
-  options = Pace.options = _extend({}, defaultOptions, window.paceOptions, getFromDOM());
+
+  extend(Pace, Evented.prototype);
+
+  options = Pace.options = extend({}, defaultOptions, window.paceOptions, getFromDOM());
+
   _ref = ['ajax', 'document', 'eventLag', 'elements'];
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     source = _ref[_i];
@@ -263,24 +217,30 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       options[source] = defaultOptions[source];
     }
   }
-  NoTargetError = function (_super) {
+
+  NoTargetError = (function(_super) {
     __extends(NoTargetError, _super);
+
     function NoTargetError() {
       _ref1 = NoTargetError.__super__.constructor.apply(this, arguments);
       return _ref1;
     }
+
     return NoTargetError;
-  }(Error);
-  Bar = function () {
+
+  })(Error);
+
+  Bar = (function() {
     function Bar() {
       this.progress = 0;
     }
-    Bar.prototype.getElement = function () {
+
+    Bar.prototype.getElement = function() {
       var targetElement;
       if (this.el == null) {
         targetElement = document.querySelector(options.target);
         if (!targetElement) {
-          throw new NoTargetError();
+          throw new NoTargetError;
         }
         this.el = document.createElement('div');
         this.el.className = "pace pace-active";
@@ -295,7 +255,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       }
       return this.el;
     };
-    Bar.prototype.finish = function () {
+
+    Bar.prototype.finish = function() {
       var el;
       el = this.getElement();
       el.className = el.className.replace('pace-active', '');
@@ -303,11 +264,13 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       document.body.className = document.body.className.replace('pace-running', '');
       return document.body.className += ' pace-done';
     };
-    Bar.prototype.update = function (prog) {
+
+    Bar.prototype.update = function(prog) {
       this.progress = prog;
       return this.render();
     };
-    Bar.prototype.destroy = function () {
+
+    Bar.prototype.destroy = function() {
       try {
         this.getElement().parentNode.removeChild(this.getElement());
       } catch (_error) {
@@ -315,7 +278,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       }
       return this.el = void 0;
     };
-    Bar.prototype.render = function () {
+
+    Bar.prototype.render = function() {
       var el, key, progressStr, transform, _j, _len1, _ref2;
       if (document.querySelector(options.target) == null) {
         return false;
@@ -339,16 +303,21 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       }
       return this.lastRenderedProgress = this.progress;
     };
-    Bar.prototype.done = function () {
+
+    Bar.prototype.done = function() {
       return this.progress >= 100;
     };
+
     return Bar;
-  }();
-  Events = function () {
+
+  })();
+
+  Events = (function() {
     function Events() {
       this.bindings = {};
     }
-    Events.prototype.trigger = function (name, val) {
+
+    Events.prototype.trigger = function(name, val) {
       var binding, _j, _len1, _ref2, _results;
       if (this.bindings[name] != null) {
         _ref2 = this.bindings[name];
@@ -360,27 +329,34 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         return _results;
       }
     };
-    Events.prototype.on = function (name, fn) {
+
+    Events.prototype.on = function(name, fn) {
       var _base;
       if ((_base = this.bindings)[name] == null) {
         _base[name] = [];
       }
       return this.bindings[name].push(fn);
     };
+
     return Events;
-  }();
+
+  })();
+
   _XMLHttpRequest = window.XMLHttpRequest;
+
   _XDomainRequest = window.XDomainRequest;
+
   _WebSocket = window.WebSocket;
-  extendNative = function extendNative(to, from) {
+
+  extendNative = function(to, from) {
     var e, key, _results;
     _results = [];
     for (key in from.prototype) {
       try {
-        if (to[key] == null && typeof from[key] !== 'function') {
+        if ((to[key] == null) && typeof from[key] !== 'function') {
           if (typeof Object.defineProperty === 'function') {
             _results.push(Object.defineProperty(to, key, {
-              get: function get() {
+              get: function() {
                 return from.prototype[key];
               },
               configurable: true,
@@ -398,8 +374,10 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     }
     return _results;
   };
+
   ignoreStack = [];
-  Pace.ignore = function () {
+
+  Pace.ignore = function() {
     var args, fn, ret;
     fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
     ignoreStack.unshift('ignore');
@@ -407,7 +385,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     ignoreStack.shift();
     return ret;
   };
-  Pace.track = function () {
+
+  Pace.track = function() {
     var args, fn, ret;
     fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
     ignoreStack.unshift('track');
@@ -415,7 +394,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     ignoreStack.shift();
     return ret;
   };
-  shouldTrack = function shouldTrack(method) {
+
+  shouldTrack = function(method) {
     var _ref2;
     if (method == null) {
       method = 'GET';
@@ -432,16 +412,18 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     }
     return false;
   };
-  RequestIntercept = function (_super) {
+
+  RequestIntercept = (function(_super) {
     __extends(RequestIntercept, _super);
+
     function RequestIntercept() {
       var monitorXHR,
         _this = this;
       RequestIntercept.__super__.constructor.apply(this, arguments);
-      monitorXHR = function monitorXHR(req) {
+      monitorXHR = function(req) {
         var _open;
         _open = req.open;
-        return req.open = function (type, url, async) {
+        return req.open = function(type, url, async) {
           if (shouldTrack(type)) {
             _this.trigger('request', {
               type: type,
@@ -452,7 +434,7 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
           return _open.apply(req, arguments);
         };
       };
-      window.XMLHttpRequest = function (flags) {
+      window.XMLHttpRequest = function(flags) {
         var req;
         req = new _XMLHttpRequest(flags);
         monitorXHR(req);
@@ -462,9 +444,9 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         extendNative(window.XMLHttpRequest, _XMLHttpRequest);
       } catch (_error) {}
       if (_XDomainRequest != null) {
-        window.XDomainRequest = function () {
+        window.XDomainRequest = function() {
           var req;
-          req = new _XDomainRequest();
+          req = new _XDomainRequest;
           monitorXHR(req);
           return req;
         };
@@ -472,8 +454,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
           extendNative(window.XDomainRequest, _XDomainRequest);
         } catch (_error) {}
       }
-      if (_WebSocket != null && options.ajax.trackWebSockets) {
-        window.WebSocket = function (url, protocols) {
+      if ((_WebSocket != null) && options.ajax.trackWebSockets) {
+        window.WebSocket = function(url, protocols) {
           var req;
           if (protocols != null) {
             req = new _WebSocket(url, protocols);
@@ -495,16 +477,21 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         } catch (_error) {}
       }
     }
+
     return RequestIntercept;
-  }(Events);
+
+  })(Events);
+
   _intercept = null;
-  getIntercept = function getIntercept() {
+
+  getIntercept = function() {
     if (_intercept == null) {
-      _intercept = new RequestIntercept();
+      _intercept = new RequestIntercept;
     }
     return _intercept;
   };
-  shouldIgnoreURL = function shouldIgnoreURL(url) {
+
+  shouldIgnoreURL = function(url) {
     var pattern, _j, _len1, _ref2;
     _ref2 = options.ajax.ignoreURLs;
     for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
@@ -521,7 +508,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     }
     return false;
   };
-  getIntercept().on('request', function (_arg) {
+
+  getIntercept().on('request', function(_arg) {
     var after, args, request, type, url;
     type = _arg.type, request = _arg.request, url = _arg.url;
     if (shouldIgnoreURL(url)) {
@@ -533,12 +521,12 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       if (typeof after === 'boolean') {
         after = 0;
       }
-      return setTimeout(function () {
+      return setTimeout(function() {
         var stillActive, _j, _len1, _ref2, _ref3, _results;
         if (type === 'socket') {
           stillActive = request.readyState < 2;
         } else {
-          stillActive = 0 < (_ref2 = request.readyState) && _ref2 < 4;
+          stillActive = (0 < (_ref2 = request.readyState) && _ref2 < 4);
         }
         if (stillActive) {
           Pace.restart();
@@ -558,15 +546,17 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       }, after);
     }
   });
-  AjaxMonitor = function () {
+
+  AjaxMonitor = (function() {
     function AjaxMonitor() {
       var _this = this;
       this.elements = [];
-      getIntercept().on('request', function () {
+      getIntercept().on('request', function() {
         return _this.watch.apply(_this, arguments);
       });
     }
-    AjaxMonitor.prototype.watch = function (_arg) {
+
+    AjaxMonitor.prototype.watch = function(_arg) {
       var request, tracker, type, url;
       type = _arg.type, request = _arg.request, url = _arg.url;
       if (shouldIgnoreURL(url)) {
@@ -579,21 +569,19 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       }
       return this.elements.push(tracker);
     };
+
     return AjaxMonitor;
-  }();
-  XHRRequestTracker = function () {
+
+  })();
+
+  XHRRequestTracker = (function() {
     function XHRRequestTracker(request) {
-      var event,
-        size,
-        _j,
-        _len1,
-        _onreadystatechange,
-        _ref2,
+      var event, size, _j, _len1, _onreadystatechange, _ref2,
         _this = this;
       this.progress = 0;
       if (window.ProgressEvent != null) {
         size = null;
-        request.addEventListener('progress', function (evt) {
+        request.addEventListener('progress', function(evt) {
           if (evt.lengthComputable) {
             return _this.progress = 100 * evt.loaded / evt.total;
           } else {
@@ -603,13 +591,13 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         _ref2 = ['load', 'abort', 'timeout', 'error'];
         for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
           event = _ref2[_j];
-          request.addEventListener(event, function () {
+          request.addEventListener(event, function() {
             return _this.progress = 100;
           }, false);
         }
       } else {
         _onreadystatechange = request.onreadystatechange;
-        request.onreadystatechange = function () {
+        request.onreadystatechange = function() {
           var _ref3;
           if ((_ref3 = request.readyState) === 0 || _ref3 === 4) {
             _this.progress = 100;
@@ -620,27 +608,30 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         };
       }
     }
+
     return XHRRequestTracker;
-  }();
-  SocketRequestTracker = function () {
+
+  })();
+
+  SocketRequestTracker = (function() {
     function SocketRequestTracker(request) {
-      var event,
-        _j,
-        _len1,
-        _ref2,
+      var event, _j, _len1, _ref2,
         _this = this;
       this.progress = 0;
       _ref2 = ['error', 'open'];
       for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
         event = _ref2[_j];
-        request.addEventListener(event, function () {
+        request.addEventListener(event, function() {
           return _this.progress = 100;
         }, false);
       }
     }
+
     return SocketRequestTracker;
-  }();
-  ElementMonitor = function () {
+
+  })();
+
+  ElementMonitor = (function() {
     function ElementMonitor(options) {
       var selector, _j, _len1, _ref2;
       if (options == null) {
@@ -656,64 +647,71 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         this.elements.push(new ElementTracker(selector));
       }
     }
+
     return ElementMonitor;
-  }();
-  ElementTracker = function () {
+
+  })();
+
+  ElementTracker = (function() {
     function ElementTracker(selector) {
       this.selector = selector;
       this.progress = 0;
       this.check();
     }
-    ElementTracker.prototype.check = function () {
+
+    ElementTracker.prototype.check = function() {
       var _this = this;
       if (document.querySelector(this.selector)) {
         return this.done();
       } else {
-        return setTimeout(function () {
+        return setTimeout((function() {
           return _this.check();
-        }, options.elements.checkInterval);
+        }), options.elements.checkInterval);
       }
     };
-    ElementTracker.prototype.done = function () {
+
+    ElementTracker.prototype.done = function() {
       return this.progress = 100;
     };
+
     return ElementTracker;
-  }();
-  DocumentMonitor = function () {
+
+  })();
+
+  DocumentMonitor = (function() {
     DocumentMonitor.prototype.states = {
       loading: 0,
       interactive: 50,
       complete: 100
     };
+
     function DocumentMonitor() {
-      var _onreadystatechange,
-        _ref2,
+      var _onreadystatechange, _ref2,
         _this = this;
       this.progress = (_ref2 = this.states[document.readyState]) != null ? _ref2 : 100;
       _onreadystatechange = document.onreadystatechange;
-      document.onreadystatechange = function () {
+      document.onreadystatechange = function() {
         if (_this.states[document.readyState] != null) {
           _this.progress = _this.states[document.readyState];
         }
         return typeof _onreadystatechange === "function" ? _onreadystatechange.apply(null, arguments) : void 0;
       };
     }
+
     return DocumentMonitor;
-  }();
-  EventLagMonitor = function () {
+
+  })();
+
+  EventLagMonitor = (function() {
     function EventLagMonitor() {
-      var avg,
-        interval,
-        last,
-        points,
-        samples,
+      var avg, interval, last, points, samples,
         _this = this;
       this.progress = 0;
       avg = 0;
       samples = [];
       points = 0;
       last = now();
-      interval = setInterval(function () {
+      interval = setInterval(function() {
         var diff;
         diff = now() - last - 50;
         last = now();
@@ -730,9 +728,12 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         }
       }, 50);
     }
+
     return EventLagMonitor;
-  }();
-  Scaler = function () {
+
+  })();
+
+  Scaler = (function() {
     function Scaler(source) {
       this.source = source;
       this.last = this.sinceLastUpdate = 0;
@@ -743,7 +744,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         this.progress = result(this.source, 'progress');
       }
     }
-    Scaler.prototype.tick = function (frameTime, val) {
+
+    Scaler.prototype.tick = function(frameTime, val) {
       var scaling;
       if (val == null) {
         val = result(this.source, 'progress');
@@ -772,41 +774,55 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       this.lastProgress = this.progress;
       return this.progress;
     };
+
     return Scaler;
-  }();
+
+  })();
+
   sources = null;
+
   scalers = null;
+
   bar = null;
+
   uniScaler = null;
+
   animation = null;
+
   cancelAnimation = null;
+
   Pace.running = false;
-  handlePushState = function handlePushState() {
+
+  handlePushState = function() {
     if (options.restartOnPushState) {
       return Pace.restart();
     }
   };
+
   if (window.history.pushState != null) {
     _pushState = window.history.pushState;
-    window.history.pushState = function () {
+    window.history.pushState = function() {
       handlePushState();
       return _pushState.apply(window.history, arguments);
     };
   }
+
   if (window.history.replaceState != null) {
     _replaceState = window.history.replaceState;
-    window.history.replaceState = function () {
+    window.history.replaceState = function() {
       handlePushState();
       return _replaceState.apply(window.history, arguments);
     };
   }
+
   SOURCE_KEYS = {
     ajax: AjaxMonitor,
     elements: ElementMonitor,
     document: DocumentMonitor,
     eventLag: EventLagMonitor
   };
-  (init = function init() {
+
+  (init = function() {
     var type, _j, _k, _len1, _len2, _ref2, _ref3, _ref4;
     Pace.sources = sources = [];
     _ref2 = ['ajax', 'elements', 'document', 'eventLag'];
@@ -821,11 +837,12 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       source = _ref4[_k];
       sources.push(new source(options));
     }
-    Pace.bar = bar = new Bar();
+    Pace.bar = bar = new Bar;
     scalers = [];
-    return uniScaler = new Scaler();
+    return uniScaler = new Scaler;
   })();
-  Pace.stop = function () {
+
+  Pace.stop = function() {
     Pace.trigger('stop');
     Pace.running = false;
     bar.destroy();
@@ -838,18 +855,20 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     }
     return init();
   };
-  Pace.restart = function () {
+
+  Pace.restart = function() {
     Pace.trigger('restart');
     Pace.stop();
     return Pace.start();
   };
-  Pace.go = function () {
+
+  Pace.go = function() {
     var start;
     Pace.running = true;
     bar.render();
     start = now();
     cancelAnimation = false;
-    return animation = runAnimation(function (frameTime, enqueueNextFrame) {
+    return animation = runAnimation(function(frameTime, enqueueNextFrame) {
       var avg, count, done, element, elements, i, j, remaining, scaler, scalerList, sum, _j, _k, _len1, _len2, _ref2;
       remaining = 100 - bar.progress;
       count = sum = 0;
@@ -874,7 +893,7 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       if (bar.done() || done || cancelAnimation) {
         bar.update(100);
         Pace.trigger('done');
-        return setTimeout(function () {
+        return setTimeout(function() {
           bar.finish();
           Pace.running = false;
           return Pace.trigger('hide');
@@ -884,8 +903,9 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       }
     });
   };
-  Pace.start = function (_options) {
-    _extend(options, _options);
+
+  Pace.start = function(_options) {
+    extend(options, _options);
     Pace.running = true;
     try {
       bar.render();
@@ -899,15 +919,17 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       return Pace.go();
     }
   };
+
   if (typeof define === 'function' && define.amd) {
-    define(['pace'], function () {
+    define(['pace'], function() {
       return Pace;
     });
-  } else if ((typeof exports === "undefined" ? "undefined" : (0, _typeof2["default"])(exports)) === 'object') {
+  } else if (typeof exports === 'object') {
     module.exports = Pace;
   } else {
     if (options.startOnPageLoad) {
       Pace.start();
     }
   }
-}).call(void 0);
+
+}).call(this);

@@ -8,12 +8,14 @@
 'use strict';
 
 var Markdown = require('markdown-it');
+
 function markdown2html(markdownString) {
   var md = new Markdown();
 
   // the slice removes the <p>...</p> wrapper output by Markdown processor
   return md.render(markdownString.trim()).slice(3, -5);
 }
+
 
 /*
 Mini-language:
@@ -30,12 +32,14 @@ Mini-language:
   All other lines are ignored completely.
 */
 
+
 var CUSTOMIZABLE_HEADING = /^[/]{2}={2}(.*)$/;
 var UNCUSTOMIZABLE_HEADING = /^[/]{2}-{2}(.*)$/;
 var SUBSECTION_HEADING = /^[/]{2}={3}(.*)$/;
 var SECTION_DOCSTRING = /^[/]{2}#{2}(.+)$/;
 var VAR_ASSIGNMENT = /^(@[a-zA-Z0-9_-]+):[ ]*([^ ;][^;]*);[ ]*$/;
 var VAR_DOCSTRING = /^[/]{2}[*]{2}(.+)$/;
+
 function Section(heading, customizable) {
   this.heading = heading.trim();
   this.id = this.heading.replace(/\s+/g, '-').toLowerCase();
@@ -43,38 +47,47 @@ function Section(heading, customizable) {
   this.docstring = null;
   this.subsections = [];
 }
+
 Section.prototype.addSubSection = function (subsection) {
   this.subsections.push(subsection);
 };
+
 function SubSection(heading) {
   this.heading = heading.trim();
   this.id = this.heading.replace(/\s+/g, '-').toLowerCase();
   this.variables = [];
 }
+
 SubSection.prototype.addVar = function (variable) {
   this.variables.push(variable);
 };
+
 function VarDocstring(markdownString) {
   this.html = markdown2html(markdownString);
 }
+
 function SectionDocstring(markdownString) {
   this.html = markdown2html(markdownString);
 }
+
 function Variable(name, defaultValue) {
   this.name = name;
   this.defaultValue = defaultValue;
   this.docstring = null;
 }
+
 function Tokenizer(fileContent) {
   this._lines = fileContent.split('\n');
   this._next = undefined;
 }
+
 Tokenizer.prototype.unshift = function (token) {
   if (this._next !== undefined) {
     throw new Error('Attempted to unshift twice!');
   }
   this._next = token;
 };
+
 Tokenizer.prototype._shift = function () {
   // returning null signals EOF
   // returning undefined means the line was ignored
@@ -116,6 +129,7 @@ Tokenizer.prototype._shift = function () {
   }
   return undefined;
 };
+
 Tokenizer.prototype.shift = function () {
   while (true) {
     var result = this._shift();
@@ -125,9 +139,11 @@ Tokenizer.prototype.shift = function () {
     return result;
   }
 };
+
 function Parser(fileContent) {
   this._tokenizer = new Tokenizer(fileContent);
 }
+
 Parser.prototype.parseFile = function () {
   var sections = [];
   while (true) {
@@ -141,6 +157,7 @@ Parser.prototype.parseFile = function () {
     sections.push(section);
   }
 };
+
 Parser.prototype.parseSection = function () {
   var section = this._tokenizer.shift();
   if (section === null) {
@@ -156,8 +173,10 @@ Parser.prototype.parseSection = function () {
     this._tokenizer.unshift(docstring);
   }
   this.parseSubSections(section);
+
   return section;
 };
+
 Parser.prototype.parseSubSections = function (section) {
   while (true) {
     var subsection = this.parseSubSection();
@@ -172,11 +191,13 @@ Parser.prototype.parseSubSections = function (section) {
     }
     section.addSubSection(subsection);
   }
+
   if (section.subsections.length === 1 && !section.subsections[0].heading && section.subsections[0].variables.length === 0) {
     // Ignore lone empty implicit subsection
     section.subsections = [];
   }
 };
+
 Parser.prototype.parseSubSection = function () {
   var subsection = this._tokenizer.shift();
   if (subsection instanceof SubSection) {
@@ -186,6 +207,7 @@ Parser.prototype.parseSubSection = function () {
   this._tokenizer.unshift(subsection);
   return null;
 };
+
 Parser.prototype.parseVars = function (subsection) {
   while (true) {
     var variable = this.parseVar();
@@ -195,6 +217,7 @@ Parser.prototype.parseVars = function (subsection) {
     subsection.addVar(variable);
   }
 };
+
 Parser.prototype.parseVar = function () {
   var docstring = this._tokenizer.shift();
   if (!(docstring instanceof VarDocstring)) {
@@ -209,4 +232,6 @@ Parser.prototype.parseVar = function () {
   this._tokenizer.unshift(variable);
   return null;
 };
+
+
 module.exports = Parser;

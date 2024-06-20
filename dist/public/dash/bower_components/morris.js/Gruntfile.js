@@ -1,31 +1,40 @@
 module.exports = function (grunt) {
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     coffee: {
       lib: {
-        options: {
-          bare: false
-        },
+        options: { bare: false },
         files: {
           'morris.js': ['build/morris.coffee']
         }
       },
       spec: {
-        options: {
-          bare: true
-        },
+        options: { bare: true },
         files: {
           'build/spec.js': ['build/spec.coffee']
         }
-      }
+      },
     },
     concat: {
       'build/morris.coffee': {
         options: {
-          banner: "### @license\n" + "<%= pkg.name %> v<%= pkg.version %>\n" + "Copyright <%= (new Date()).getFullYear() %> <%= pkg.author.name %> All rights reserved.\n" + "Licensed under the <%= pkg.license %> License.\n" + "###\n"
+          banner: "### @license\n"+
+                  "<%= pkg.name %> v<%= pkg.version %>\n"+
+                  "Copyright <%= (new Date()).getFullYear() %> <%= pkg.author.name %> All rights reserved.\n" +
+                  "Licensed under the <%= pkg.license %> License.\n" +
+                  "###\n",
         },
-        src: ['lib/morris.coffee', 'lib/morris.grid.coffee', 'lib/morris.hover.coffee', 'lib/morris.line.coffee', 'lib/morris.area.coffee', 'lib/morris.bar.coffee', 'lib/morris.donut.coffee'],
+        src: [
+          'lib/morris.coffee',
+          'lib/morris.grid.coffee',
+          'lib/morris.hover.coffee',
+          'lib/morris.line.coffee',
+          'lib/morris.area.coffee',
+          'lib/morris.bar.coffee',
+          'lib/morris.donut.coffee'
+        ],
         dest: 'build/morris.coffee'
       },
       'build/spec.coffee': ['spec/support/**/*.coffee', 'spec/lib/**/*.coffee']
@@ -51,9 +60,7 @@ module.exports = function (grunt) {
     },
     mocha: {
       index: ['spec/specs.html'],
-      options: {
-        run: true
-      }
+      options: {run: true}
     },
     watch: {
       all: {
@@ -61,7 +68,7 @@ module.exports = function (grunt) {
         tasks: 'default'
       },
       dev: {
-        files: 'lib/*.coffee',
+        files:  'lib/*.coffee' ,
         tasks: ['concat:build/morris.coffee', 'coffee:lib']
       }
     },
@@ -78,5 +85,6 @@ module.exports = function (grunt) {
       }
     }
   });
+
   grunt.registerTask('default', ['concat', 'coffee', 'less', 'uglify', 'mocha', 'shell:visual_spec']);
 };

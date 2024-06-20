@@ -20,7 +20,9 @@ RegExp.quote = function (string) {
 RegExp.quoteReplacement = function (string) {
   return string.replace(/[$]/g, '$$');
 };
+
 var DRY_RUN = false;
+
 function walkAsync(directory, excludedDirectories, fileCallback, errback) {
   if (excludedDirectories.has(path.parse(directory).base)) {
     return;
@@ -39,15 +41,18 @@ function walkAsync(directory, excludedDirectories, fileCallback, errback) {
         }
         if (stats.isSymbolicLink()) {
           return;
-        } else if (stats.isDirectory()) {
+        }
+        else if (stats.isDirectory()) {
           process.nextTick(walkAsync, filepath, excludedDirectories, fileCallback, errback);
-        } else if (stats.isFile()) {
+        }
+        else if (stats.isFile()) {
           process.nextTick(fileCallback, filepath);
         }
       });
     });
   });
 }
+
 function replaceRecursively(directory, excludedDirectories, allowedExtensions, original, replacement) {
   original = new RegExp(RegExp.quote(original), 'g');
   replacement = RegExp.quoteReplacement(replacement);
@@ -58,7 +63,8 @@ function replaceRecursively(directory, excludedDirectories, allowedExtensions, o
   } : function (filepath) {
     if (allowedExtensions.has(path.parse(filepath).ext)) {
       console.log('FILE: ' + filepath);
-    } else {
+    }
+    else {
       console.log('EXCLUDED:' + filepath);
     }
   };
@@ -68,6 +74,7 @@ function replaceRecursively(directory, excludedDirectories, allowedExtensions, o
     process.exit(1);
   });
 }
+
 function main(args) {
   if (args.length !== 2) {
     console.error('USAGE: change-version old_version new_version');
@@ -76,10 +83,27 @@ function main(args) {
   }
   var oldVersion = args[0];
   var newVersion = args[1];
-  var EXCLUDED_DIRS = new Set(['.git', 'node_modules', 'vendor']);
+  var EXCLUDED_DIRS = new Set([
+    '.git',
+    'node_modules',
+    'vendor'
+  ]);
   var INCLUDED_EXTENSIONS = new Set([
-  // This extension whitelist is how we avoid modifying binary files
-  '', '.css', '.html', '.js', '.json', '.less', '.md', '.nuspec', '.ps1', '.scss', '.txt', '.yml']);
+    // This extension whitelist is how we avoid modifying binary files
+    '',
+    '.css',
+    '.html',
+    '.js',
+    '.json',
+    '.less',
+    '.md',
+    '.nuspec',
+    '.ps1',
+    '.scss',
+    '.txt',
+    '.yml'
+  ]);
   replaceRecursively('.', EXCLUDED_DIRS, INCLUDED_EXTENSIONS, oldVersion, newVersion);
 }
+
 main(process.argv.slice(2));

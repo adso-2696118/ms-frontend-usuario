@@ -1,7 +1,3 @@
-"use strict";
-
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 /*!
  * Bootstrap Colorpicker v2.5.1
  * https://itsjavi.com/bootstrap-colorpicker/
@@ -12,13 +8,13 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
  *
  */
 
-(function (root, factory) {
+(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module unless amdModuleId is set
-    define(["jquery"], function (jq) {
-      return factory(jq);
+    define(["jquery"], function(jq) {
+      return (factory(jq));
     });
-  } else if ((typeof exports === "undefined" ? "undefined" : (0, _typeof2["default"])(exports)) === 'object') {
+  } else if (typeof exports === 'object') {
     // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.
@@ -26,9 +22,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
   } else if (jQuery && !jQuery.fn.colorpicker) {
     factory(jQuery);
   }
-})(void 0, function ($) {
+}(this, function($) {
   'use strict';
-
   /**
    * Color manipulation helper class
    *
@@ -39,22 +34,34 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
    * @param {Boolean} [hexNumberSignPrefix]
    * @constructor
    */
-  var Color = function Color(val, predefinedColors, fallbackColor, fallbackFormat, hexNumberSignPrefix) {
-    this.fallbackValue = fallbackColor ? fallbackColor && typeof fallbackColor.h !== 'undefined' ? fallbackColor : this.value = {
-      h: 0,
-      s: 0,
-      b: 0,
-      a: 1
-    } : null;
+  var Color = function(
+    val, predefinedColors, fallbackColor, fallbackFormat, hexNumberSignPrefix) {
+    this.fallbackValue = fallbackColor ?
+      (
+        fallbackColor && (typeof fallbackColor.h !== 'undefined') ?
+        fallbackColor :
+        this.value = {
+          h: 0,
+          s: 0,
+          b: 0,
+          a: 1
+        }
+      ) :
+      null;
+
     this.fallbackFormat = fallbackFormat ? fallbackFormat : 'rgba';
+
     this.hexNumberSignPrefix = hexNumberSignPrefix === true;
+
     this.value = this.fallbackValue;
+
     this.origFormat = null; // original string format
 
     this.predefinedColors = predefinedColors ? predefinedColors : {};
 
     // We don't want to share aliases across instances so we extend new object
     this.colors = $.extend({}, Color.webColors, this.predefinedColors);
+
     if (val) {
       if (typeof val.h !== 'undefined') {
         this.value = val;
@@ -62,6 +69,7 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         this.setColor(String(val));
       }
     }
+
     if (!this.value) {
       // Initial value is always black if no arguments are passed or val is empty
       this.value = {
@@ -72,8 +80,8 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       };
     }
   };
-  Color.webColors = {
-    // 140 predefined colors from the HTML Colors spec
+
+  Color.webColors = { // 140 predefined colors from the HTML Colors spec
     "aliceblue": "f0f8ff",
     "antiquewhite": "faebd7",
     "aqua": "00ffff",
@@ -216,28 +224,28 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     "yellowgreen": "9acd32",
     "transparent": "transparent"
   };
+
   Color.prototype = {
     constructor: Color,
-    colors: {},
-    // merged web and predefined colors
+    colors: {}, // merged web and predefined colors
     predefinedColors: {},
     /**
      * @return {Object}
      */
-    getValue: function getValue() {
+    getValue: function() {
       return this.value;
     },
     /**
      * @param {Object} val
      */
-    setValue: function setValue(val) {
+    setValue: function(val) {
       this.value = val;
     },
-    _sanitizeNumber: function _sanitizeNumber(val) {
+    _sanitizeNumber: function(val) {
       if (typeof val === 'number') {
         return val;
       }
-      if (isNaN(val) || val === null || val === '' || val === undefined) {
+      if (isNaN(val) || (val === null) || (val === '') || (val === undefined)) {
         return 1;
       }
       if (val === '') {
@@ -251,15 +259,15 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       }
       return 1;
     },
-    isTransparent: function isTransparent(strVal) {
+    isTransparent: function(strVal) {
       if (!strVal || !(typeof strVal === 'string' || strVal instanceof String)) {
         return false;
       }
       strVal = strVal.toLowerCase().trim();
-      return strVal === 'transparent' || strVal.match(/#?00000000/) || strVal.match(/(rgba|hsla)\(0,0,0,0?\.?0\)/);
+      return (strVal === 'transparent') || (strVal.match(/#?00000000/)) || (strVal.match(/(rgba|hsla)\(0,0,0,0?\.?0\)/));
     },
-    rgbaIsTransparent: function rgbaIsTransparent(rgba) {
-      return rgba.r === 0 && rgba.g === 0 && rgba.b === 0 && rgba.a === 0;
+    rgbaIsTransparent: function(rgba) {
+      return ((rgba.r === 0) && (rgba.g === 0) && (rgba.b === 0) && (rgba.a === 0));
     },
     // parse a string to HSB
     /**
@@ -267,7 +275,7 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
      * @param {String} strVal
      * @returns {boolean} Returns true if it could be parsed, false otherwise
      */
-    setColor: function setColor(strVal) {
+    setColor: function(strVal) {
       strVal = strVal.toLowerCase().trim();
       if (strVal) {
         if (this.isTransparent(strVal)) {
@@ -298,35 +306,38 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       }
       return false;
     },
-    setHue: function setHue(h) {
+    setHue: function(h) {
       this.value.h = 1 - h;
     },
-    setSaturation: function setSaturation(s) {
+    setSaturation: function(s) {
       this.value.s = s;
     },
-    setBrightness: function setBrightness(b) {
+    setBrightness: function(b) {
       this.value.b = 1 - b;
     },
-    setAlpha: function setAlpha(a) {
-      this.value.a = Math.round(parseInt((1 - a) * 100, 10) / 100 * 100) / 100;
+    setAlpha: function(a) {
+      this.value.a = Math.round((parseInt((1 - a) * 100, 10) / 100) * 100) / 100;
     },
-    toRGB: function toRGB(h, s, b, a) {
+    toRGB: function(h, s, b, a) {
       if (arguments.length === 0) {
         h = this.value.h;
         s = this.value.s;
         b = this.value.b;
         a = this.value.a;
       }
+
       h *= 360;
       var R, G, B, X, C;
-      h = h % 360 / 60;
+      h = (h % 360) / 60;
       C = b * s;
       X = C * (1 - Math.abs(h % 2 - 1));
       R = G = B = b - C;
+
       h = ~~h;
       R += [C, X, 0, 0, X, C][h];
       G += [X, C, C, X, 0, 0][h];
       B += [0, 0, X, C, C, X][h];
+
       return {
         r: Math.round(R * 255),
         g: Math.round(G * 255),
@@ -334,27 +345,38 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         a: a
       };
     },
-    toHex: function toHex(h, s, b, a) {
+    toHex: function(h, s, b, a) {
       if (arguments.length === 0) {
         h = this.value.h;
         s = this.value.s;
         b = this.value.b;
         a = this.value.a;
       }
+
       var rgb = this.toRGB(h, s, b, a);
+
       if (this.rgbaIsTransparent(rgb)) {
         return 'transparent';
       }
-      var hexStr = (this.hexNumberSignPrefix ? '#' : '') + ((1 << 24) + (parseInt(rgb.r) << 16) + (parseInt(rgb.g) << 8) + parseInt(rgb.b)).toString(16).slice(1);
+
+      var hexStr = (this.hexNumberSignPrefix ? '#' : '') + (
+          (1 << 24) +
+          (parseInt(rgb.r) << 16) +
+          (parseInt(rgb.g) << 8) +
+          parseInt(rgb.b))
+        .toString(16)
+        .slice(1);
+
       return hexStr;
     },
-    toHSL: function toHSL(h, s, b, a) {
+    toHSL: function(h, s, b, a) {
       if (arguments.length === 0) {
         h = this.value.h;
         s = this.value.s;
         b = this.value.b;
         a = this.value.a;
       }
+
       var H = h,
         L = (2 - s) * b,
         S = s * b;
@@ -374,29 +396,34 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         a: isNaN(a) ? 0 : a
       };
     },
-    toAlias: function toAlias(r, g, b, a) {
-      var c,
-        rgb = arguments.length === 0 ? this.toHex() : this.toHex(r, g, b, a);
+    toAlias: function(r, g, b, a) {
+      var c, rgb = (arguments.length === 0) ? this.toHex() : this.toHex(r, g, b, a);
 
       // support predef. colors in non-hex format too, as defined in the alias itself
       var original = this.origFormat === 'alias' ? rgb : this.toString(this.origFormat, false);
+
       for (var alias in this.colors) {
         c = this.colors[alias].toLowerCase().trim();
-        if (c === rgb || c === original) {
+        if ((c === rgb) || (c === original)) {
           return alias;
         }
       }
       return false;
     },
-    RGBtoHSB: function RGBtoHSB(r, g, b, a) {
+    RGBtoHSB: function(r, g, b, a) {
       r /= 255;
       g /= 255;
       b /= 255;
+
       var H, S, V, C;
       V = Math.max(r, g, b);
       C = V - Math.min(r, g, b);
-      H = C === 0 ? null : V === r ? (g - b) / C : V === g ? (b - r) / C + 2 : (r - g) / C + 4;
-      H = (H + 360) % 6 * 60 / 360;
+      H = (C === 0 ? null :
+        V === r ? (g - b) / C :
+        V === g ? (b - r) / C + 2 :
+        (r - g) / C + 4
+      );
+      H = ((H + 360) % 6) * 60 / 360;
       S = C === 0 ? 0 : C / V;
       return {
         h: this._sanitizeNumber(H),
@@ -405,23 +432,23 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         a: this._sanitizeNumber(a)
       };
     },
-    HueToRGB: function HueToRGB(p, q, h) {
+    HueToRGB: function(p, q, h) {
       if (h < 0) {
         h += 1;
       } else if (h > 1) {
         h -= 1;
       }
-      if (h * 6 < 1) {
+      if ((h * 6) < 1) {
         return p + (q - p) * h * 6;
-      } else if (h * 2 < 1) {
+      } else if ((h * 2) < 1) {
         return q;
-      } else if (h * 3 < 2) {
-        return p + (q - p) * (2 / 3 - h) * 6;
+      } else if ((h * 3) < 2) {
+        return p + (q - p) * ((2 / 3) - h) * 6;
       } else {
         return p;
       }
     },
-    HSLtoRGB: function HSLtoRGB(h, s, l, a) {
+    HSLtoRGB: function(h, s, l, a) {
       if (s < 0) {
         s = 0;
       }
@@ -429,12 +456,15 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       if (l <= 0.5) {
         q = l * (1 + s);
       } else {
-        q = l + s - l * s;
+        q = l + s - (l * s);
       }
+
       var p = 2 * l - q;
-      var tr = h + 1 / 3;
+
+      var tr = h + (1 / 3);
       var tg = h;
-      var tb = h - 1 / 3;
+      var tb = h - (1 / 3);
+
       var r = Math.round(this.HueToRGB(p, q, tr) * 255);
       var g = Math.round(this.HueToRGB(p, q, tg) * 255);
       var b = Math.round(this.HueToRGB(p, q, tb) * 255);
@@ -444,24 +474,26 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
      * @param {String} strVal
      * @returns {Object} Object containing h,s,b,a,format properties or FALSE if failed to parse
      */
-    parse: function parse(strVal) {
+    parse: function(strVal) {
       if (arguments.length === 0) {
         return false;
       }
+
       var that = this,
         result = false,
-        isAlias = typeof this.colors[strVal] !== 'undefined',
-        values,
-        format;
+        isAlias = (typeof this.colors[strVal] !== 'undefined'),
+        values, format;
+
       if (isAlias) {
         strVal = this.colors[strVal].toLowerCase().trim();
       }
-      $.each(this.stringParsers, function (i, parser) {
+
+      $.each(this.stringParsers, function(i, parser) {
         var match = parser.re.exec(strVal);
         values = match && parser.parse.apply(that, [match]);
         if (values) {
           result = {};
-          format = isAlias ? 'alias' : parser.format ? parser.format : that.getValidFallbackFormat();
+          format = (isAlias ? 'alias' : (parser.format ? parser.format : that.getValidFallbackFormat()));
           if (format.match(/hsla?/)) {
             result = that.RGBtoHSB.apply(that, that.HSLtoRGB.apply(that, values));
           } else {
@@ -476,14 +508,17 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       });
       return result;
     },
-    getValidFallbackFormat: function getValidFallbackFormat() {
-      var formats = ['rgba', 'rgb', 'hex', 'hsla', 'hsl'];
-      if (this.origFormat && formats.indexOf(this.origFormat) !== -1) {
+    getValidFallbackFormat: function() {
+      var formats = [
+        'rgba', 'rgb', 'hex', 'hsla', 'hsl'
+      ];
+      if (this.origFormat && (formats.indexOf(this.origFormat) !== -1)) {
         return this.origFormat;
       }
-      if (this.fallbackFormat && formats.indexOf(this.fallbackFormat) !== -1) {
+      if (this.fallbackFormat && (formats.indexOf(this.fallbackFormat) !== -1)) {
         return this.fallbackFormat;
       }
+
       return 'rgba'; // By default, return a format that will not lose the alpha info
     },
     /**
@@ -492,10 +527,12 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
      * @param {boolean} [translateAlias] Return real color for pre-defined (non-standard) aliases (default: false)
      * @returns {String}
      */
-    toString: function toString(format, translateAlias) {
+    toString: function(format, translateAlias) {
       format = format || this.origFormat || this.fallbackFormat;
       translateAlias = translateAlias || false;
+
       var c = false;
+
       switch (format) {
         case 'rgb':
           {
@@ -532,12 +569,15 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         case 'alias':
           {
             c = this.toAlias();
+
             if (c === false) {
               return this.toString(this.getValidFallbackFormat());
             }
-            if (translateAlias && !(c in Color.webColors) && c in this.predefinedColors) {
+
+            if (translateAlias && !(c in Color.webColors) && (c in this.predefinedColors)) {
               return this.predefinedColors[c];
             }
+
             return c;
           }
         default:
@@ -553,53 +593,93 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     stringParsers: [{
       re: /rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*?\)/,
       format: 'rgb',
-      parse: function parse(execResult) {
-        return [execResult[1], execResult[2], execResult[3], 1];
+      parse: function(execResult) {
+        return [
+          execResult[1],
+          execResult[2],
+          execResult[3],
+          1
+        ];
       }
     }, {
       re: /rgb\(\s*(\d*(?:\.\d+)?)\%\s*,\s*(\d*(?:\.\d+)?)\%\s*,\s*(\d*(?:\.\d+)?)\%\s*?\)/,
       format: 'rgb',
-      parse: function parse(execResult) {
-        return [2.55 * execResult[1], 2.55 * execResult[2], 2.55 * execResult[3], 1];
+      parse: function(execResult) {
+        return [
+          2.55 * execResult[1],
+          2.55 * execResult[2],
+          2.55 * execResult[3],
+          1
+        ];
       }
     }, {
       re: /rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d*(?:\.\d+)?)\s*)?\)/,
       format: 'rgba',
-      parse: function parse(execResult) {
-        return [execResult[1], execResult[2], execResult[3], execResult[4]];
+      parse: function(execResult) {
+        return [
+          execResult[1],
+          execResult[2],
+          execResult[3],
+          execResult[4]
+        ];
       }
     }, {
       re: /rgba\(\s*(\d*(?:\.\d+)?)\%\s*,\s*(\d*(?:\.\d+)?)\%\s*,\s*(\d*(?:\.\d+)?)\%\s*(?:,\s*(\d*(?:\.\d+)?)\s*)?\)/,
       format: 'rgba',
-      parse: function parse(execResult) {
-        return [2.55 * execResult[1], 2.55 * execResult[2], 2.55 * execResult[3], execResult[4]];
+      parse: function(execResult) {
+        return [
+          2.55 * execResult[1],
+          2.55 * execResult[2],
+          2.55 * execResult[3],
+          execResult[4]
+        ];
       }
     }, {
       re: /hsl\(\s*(\d*(?:\.\d+)?)\s*,\s*(\d*(?:\.\d+)?)\%\s*,\s*(\d*(?:\.\d+)?)\%\s*?\)/,
       format: 'hsl',
-      parse: function parse(execResult) {
-        return [execResult[1] / 360, execResult[2] / 100, execResult[3] / 100, execResult[4]];
+      parse: function(execResult) {
+        return [
+          execResult[1] / 360,
+          execResult[2] / 100,
+          execResult[3] / 100,
+          execResult[4]
+        ];
       }
     }, {
       re: /hsla\(\s*(\d*(?:\.\d+)?)\s*,\s*(\d*(?:\.\d+)?)\%\s*,\s*(\d*(?:\.\d+)?)\%\s*(?:,\s*(\d*(?:\.\d+)?)\s*)?\)/,
       format: 'hsla',
-      parse: function parse(execResult) {
-        return [execResult[1] / 360, execResult[2] / 100, execResult[3] / 100, execResult[4]];
+      parse: function(execResult) {
+        return [
+          execResult[1] / 360,
+          execResult[2] / 100,
+          execResult[3] / 100,
+          execResult[4]
+        ];
       }
     }, {
       re: /#?([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/,
       format: 'hex',
-      parse: function parse(execResult) {
-        return [parseInt(execResult[1], 16), parseInt(execResult[2], 16), parseInt(execResult[3], 16), 1];
+      parse: function(execResult) {
+        return [
+          parseInt(execResult[1], 16),
+          parseInt(execResult[2], 16),
+          parseInt(execResult[3], 16),
+          1
+        ];
       }
     }, {
       re: /#?([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/,
       format: 'hex',
-      parse: function parse(execResult) {
-        return [parseInt(execResult[1] + execResult[1], 16), parseInt(execResult[2] + execResult[2], 16), parseInt(execResult[3] + execResult[3], 16), 1];
+      parse: function(execResult) {
+        return [
+          parseInt(execResult[1] + execResult[1], 16),
+          parseInt(execResult[2] + execResult[2], 16),
+          parseInt(execResult[3] + execResult[3], 16),
+          1
+        ];
       }
     }],
-    colorNameToHex: function colorNameToHex(name) {
+    colorNameToHex: function(name) {
       if (typeof this.colors[name.toLowerCase()] !== 'undefined') {
         return this.colors[name.toLowerCase()];
       }
@@ -611,26 +691,16 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
    * Default plugin options
    */
   var defaults = {
-    horizontal: false,
-    // horizontal mode layout ?
-    inline: false,
-    //forces to show the colorpicker as an inline element
-    color: false,
-    //forces a color
-    format: false,
-    //forces a format
-    input: 'input',
-    // children input selector
-    container: false,
-    // container selector
-    component: '.add-on, .input-group-addon',
-    // children component selector
-    fallbackColor: false,
-    // fallback color value. null = keeps current color.
-    fallbackFormat: 'hex',
-    // fallback color format
-    hexNumberSignPrefix: true,
-    // put a '#' (number sign) before hex strings
+    horizontal: false, // horizontal mode layout ?
+    inline: false, //forces to show the colorpicker as an inline element
+    color: false, //forces a color
+    format: false, //forces a format
+    input: 'input', // children input selector
+    container: false, // container selector
+    component: '.add-on, .input-group-addon', // children component selector
+    fallbackColor: false, // fallback color value. null = keeps current color.
+    fallbackFormat: 'hex', // fallback color format
+    hexNumberSignPrefix: true, // put a '#' (number sign) before hex strings
     sliders: {
       saturation: {
         maxLeft: 100,
@@ -671,10 +741,15 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         callTop: false
       }
     },
-    template: '<div class="colorpicker dropdown-menu">' + '<div class="colorpicker-saturation"><i><b></b></i></div>' + '<div class="colorpicker-hue"><i></i></div>' + '<div class="colorpicker-alpha"><i></i></div>' + '<div class="colorpicker-color"><div /></div>' + '<div class="colorpicker-selectors"></div>' + '</div>',
+    template: '<div class="colorpicker dropdown-menu">' +
+      '<div class="colorpicker-saturation"><i><b></b></i></div>' +
+      '<div class="colorpicker-hue"><i></i></div>' +
+      '<div class="colorpicker-alpha"><i></i></div>' +
+      '<div class="colorpicker-color"><div /></div>' +
+      '<div class="colorpicker-selectors"></div>' +
+      '</div>',
     align: 'right',
-    customClass: null,
-    // custom class added to the colorpicker element
+    customClass: null, // custom class added to the colorpicker element
     colorSelectors: null // custom color aliases
   };
 
@@ -685,25 +760,28 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
    * @param {Object} options
    * @constructor
    */
-  var Colorpicker = function Colorpicker(element, options) {
+  var Colorpicker = function(element, options) {
     this.element = $(element).addClass('colorpicker-element');
     this.options = $.extend(true, {}, defaults, this.element.data(), options);
     this.component = this.options.component;
-    this.component = this.component !== false ? this.element.find(this.component) : false;
-    if (this.component && this.component.length === 0) {
+    this.component = (this.component !== false) ? this.element.find(this.component) : false;
+    if (this.component && (this.component.length === 0)) {
       this.component = false;
     }
-    this.container = this.options.container === true ? this.element : this.options.container;
-    this.container = this.container !== false ? $(this.container) : false;
+    this.container = (this.options.container === true) ? this.element : this.options.container;
+    this.container = (this.container !== false) ? $(this.container) : false;
 
     // Is the element an input? Should we search inside for any input?
-    this.input = this.element.is('input') ? this.element : this.options.input ? this.element.find(this.options.input) : false;
-    if (this.input && this.input.length === 0) {
+    this.input = this.element.is('input') ? this.element : (this.options.input ?
+      this.element.find(this.options.input) : false);
+    if (this.input && (this.input.length === 0)) {
       this.input = false;
     }
     // Set HSB color
     this.color = this.createColor(this.options.color !== false ? this.options.color : this.getValue());
+
     this.format = this.options.format !== false ? this.options.format : this.color.origFormat;
+
     if (this.options.color !== false) {
       this.updateInput(this.color);
       this.updateData(this.color);
@@ -722,7 +800,11 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     if (this.options.horizontal) {
       $picker.addClass('colorpicker-horizontal');
     }
-    if (['rgba', 'hsla', 'alias'].indexOf(this.format) !== -1 || this.options.format === false || this.getValue() === 'transparent') {
+    if (
+      (['rgba', 'hsla', 'alias'].indexOf(this.format) !== -1) ||
+      this.options.format === false ||
+      this.getValue() === 'transparent'
+    ) {
       $picker.addClass('colorpicker-with-alpha');
     }
     if (this.options.align === 'right') {
@@ -734,12 +816,19 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     if (this.options.colorSelectors) {
       var colorpicker = this,
         selectorsContainer = colorpicker.picker.find('.colorpicker-selectors');
+
       if (selectorsContainer.length > 0) {
-        $.each(this.options.colorSelectors, function (name, color) {
-          var $btn = $('<i />').addClass('colorpicker-selectors-color').css('background-color', color).data('class', name).data('alias', name);
-          $btn.on('mousedown.colorpicker touchstart.colorpicker', function (event) {
+        $.each(this.options.colorSelectors, function(name, color) {
+          var $btn = $('<i />')
+            .addClass('colorpicker-selectors-color')
+            .css('background-color', color)
+            .data('class', name).data('alias', name);
+
+          $btn.on('mousedown.colorpicker touchstart.colorpicker', function(event) {
             event.preventDefault();
-            colorpicker.setValue(colorpicker.format === 'alias' ? $(this).data('alias') : $(this).css('background-color'));
+            colorpicker.setValue(
+              colorpicker.format === 'alias' ? $(this).data('alias') : $(this).css('background-color')
+            );
           });
           selectorsContainer.append($btn);
         });
@@ -748,14 +837,16 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     }
 
     // Prevent closing the colorpicker when clicking on itself
-    $picker.on('mousedown.colorpicker touchstart.colorpicker', $.proxy(function (e) {
+    $picker.on('mousedown.colorpicker touchstart.colorpicker', $.proxy(function(e) {
       if (e.target === e.currentTarget) {
         e.preventDefault();
       }
     }, this));
 
     // Bind click/tap events on the sliders
-    $picker.find('.colorpicker-saturation, .colorpicker-hue, .colorpicker-alpha').on('mousedown.colorpicker touchstart.colorpicker', $.proxy(this.mousedown, this));
+    $picker.find('.colorpicker-saturation, .colorpicker-hue, .colorpicker-alpha')
+      .on('mousedown.colorpicker touchstart.colorpicker', $.proxy(this.mousedown, this));
+
     $picker.appendTo(this.container ? this.container : $('body'));
 
     // Bind other events
@@ -777,33 +868,39 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         });
       }
     }
+
     if (this.component !== false) {
       this.component.on({
         'click.colorpicker': $.proxy(this.show, this)
       });
     }
-    if (this.input === false && this.component === false) {
+
+    if ((this.input === false) && (this.component === false)) {
       this.element.on({
         'click.colorpicker': $.proxy(this.show, this)
       });
     }
 
     // for HTML5 input[type='color']
-    if (this.input !== false && this.component !== false && this.input.attr('type') === 'color') {
+    if ((this.input !== false) && (this.component !== false) && (this.input.attr('type') === 'color')) {
+
       this.input.on({
         'click.colorpicker': $.proxy(this.show, this),
         'focus.colorpicker': $.proxy(this.show, this)
       });
     }
     this.update();
-    $($.proxy(function () {
+
+    $($.proxy(function() {
       this.element.trigger('create');
     }, this));
   };
+
   Colorpicker.Color = Color;
+
   Colorpicker.prototype = {
     constructor: Colorpicker,
-    destroy: function destroy() {
+    destroy: function() {
       this.picker.remove();
       this.element.removeData('colorpicker', 'color').off('.colorpicker');
       if (this.input !== false) {
@@ -817,7 +914,7 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         type: 'destroy'
       });
     },
-    reposition: function reposition() {
+    reposition: function() {
       if (this.options.inline !== false || this.options.container) {
         return false;
       }
@@ -832,7 +929,7 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         left: offset.left
       });
     },
-    show: function show(e) {
+    show: function(e) {
       if (this.isDisabled()) {
         // Don't show the widget if it's disabled (the input)
         return;
@@ -846,7 +943,7 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
           e.preventDefault();
         }
       }
-      if ((this.component || !this.input) && this.options.inline === false) {
+      if ((this.component || !this.input) && (this.options.inline === false)) {
         $(window.document).on({
           'mousedown.colorpicker': $.proxy(this.hide, this)
         });
@@ -856,10 +953,13 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         color: this.color
       });
     },
-    hide: function hide(e) {
-      if (typeof e !== 'undefined' && e.target) {
+    hide: function(e) {
+      if ((typeof e !== 'undefined') && e.target) {
         // Prevent hide if triggered by an event and an element inside the colorpicker has been clicked/touched
-        if ($(e.currentTarget).parents('.colorpicker').length > 0 || $(e.target).parents('.colorpicker').length > 0) {
+        if (
+          $(e.currentTarget).parents('.colorpicker').length > 0 ||
+          $(e.target).parents('.colorpicker').length > 0
+        ) {
           return false;
         }
       }
@@ -874,12 +974,12 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         color: this.color
       });
     },
-    updateData: function updateData(val) {
+    updateData: function(val) {
       val = val || this.color.toString(this.format, false);
       this.element.data('color', val);
       return val;
     },
-    updateInput: function updateInput(val) {
+    updateInput: function(val) {
       val = val || this.color.toString(this.format, false);
       if (this.input !== false) {
         this.input.prop('value', val);
@@ -887,38 +987,49 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       }
       return val;
     },
-    updatePicker: function updatePicker(val) {
+    updatePicker: function(val) {
       if (typeof val !== 'undefined') {
         this.color = this.createColor(val);
       }
-      var sl = this.options.horizontal === false ? this.options.sliders : this.options.slidersHorz;
+      var sl = (this.options.horizontal === false) ? this.options.sliders : this.options.slidersHorz;
       var icns = this.picker.find('i');
       if (icns.length === 0) {
         return;
       }
       if (this.options.horizontal === false) {
         sl = this.options.sliders;
-        icns.eq(1).css('top', sl.hue.maxTop * (1 - this.color.value.h)).end().eq(2).css('top', sl.alpha.maxTop * (1 - this.color.value.a));
+        icns.eq(1).css('top', sl.hue.maxTop * (1 - this.color.value.h)).end()
+          .eq(2).css('top', sl.alpha.maxTop * (1 - this.color.value.a));
       } else {
         sl = this.options.slidersHorz;
-        icns.eq(1).css('left', sl.hue.maxLeft * (1 - this.color.value.h)).end().eq(2).css('left', sl.alpha.maxLeft * (1 - this.color.value.a));
+        icns.eq(1).css('left', sl.hue.maxLeft * (1 - this.color.value.h)).end()
+          .eq(2).css('left', sl.alpha.maxLeft * (1 - this.color.value.a));
       }
       icns.eq(0).css({
         'top': sl.saturation.maxTop - this.color.value.b * sl.saturation.maxTop,
         'left': this.color.value.s * sl.saturation.maxLeft
       });
-      this.picker.find('.colorpicker-saturation').css('backgroundColor', (this.options.hexNumberSignPrefix ? '' : '#') + this.color.toHex(this.color.value.h, 1, 1, 1));
-      this.picker.find('.colorpicker-alpha').css('backgroundColor', (this.options.hexNumberSignPrefix ? '' : '#') + this.color.toHex());
-      this.picker.find('.colorpicker-color, .colorpicker-color div').css('backgroundColor', this.color.toString(this.format, true));
+
+      this.picker.find('.colorpicker-saturation')
+        .css('backgroundColor', (this.options.hexNumberSignPrefix ? '' : '#') + this.color.toHex(this.color.value.h, 1, 1, 1));
+
+      this.picker.find('.colorpicker-alpha')
+        .css('backgroundColor', (this.options.hexNumberSignPrefix ? '' : '#') + this.color.toHex());
+
+      this.picker.find('.colorpicker-color, .colorpicker-color div')
+        .css('backgroundColor', this.color.toString(this.format, true));
+
       return val;
     },
-    updateComponent: function updateComponent(val) {
+    updateComponent: function(val) {
       var color;
+
       if (typeof val !== 'undefined') {
         color = this.createColor(val);
       } else {
         color = this.color;
       }
+
       if (this.component !== false) {
         var icn = this.component.find('i').eq(0);
         if (icn.length > 0) {
@@ -931,11 +1042,12 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
           });
         }
       }
+
       return color.toString(this.format, false);
     },
-    update: function update(force) {
+    update: function(force) {
       var val;
-      if (this.getValue(false) !== false || force === true) {
+      if ((this.getValue(false) !== false) || (force === true)) {
         // Update input/data only if the current value is not empty
         val = this.updateComponent();
         this.updateInput(val);
@@ -943,9 +1055,9 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         this.updatePicker(); // only update picker if value is not empty
       }
       return val;
+
     },
-    setValue: function setValue(val) {
-      // set color manually
+    setValue: function(val) { // set color manually
       this.color = this.createColor(val);
       this.update(true);
       this.element.trigger({
@@ -960,33 +1072,39 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
      * @param {String} val
      * @returns {Color}
      */
-    createColor: function createColor(val) {
-      return new Color(val ? val : null, this.options.colorSelectors, this.options.fallbackColor ? this.options.fallbackColor : this.color, this.options.fallbackFormat, this.options.hexNumberSignPrefix);
+    createColor: function(val) {
+      return new Color(
+        val ? val : null,
+        this.options.colorSelectors,
+        this.options.fallbackColor ? this.options.fallbackColor : this.color,
+        this.options.fallbackFormat,
+        this.options.hexNumberSignPrefix
+      );
     },
-    getValue: function getValue(defaultValue) {
-      defaultValue = typeof defaultValue === 'undefined' ? this.options.fallbackColor : defaultValue;
+    getValue: function(defaultValue) {
+      defaultValue = (typeof defaultValue === 'undefined') ? this.options.fallbackColor : defaultValue;
       var val;
       if (this.hasInput()) {
         val = this.input.val();
       } else {
         val = this.element.data('color');
       }
-      if (val === undefined || val === '' || val === null) {
+      if ((val === undefined) || (val === '') || (val === null)) {
         // if not defined or empty, return default
         val = defaultValue;
       }
       return val;
     },
-    hasInput: function hasInput() {
-      return this.input !== false;
+    hasInput: function() {
+      return (this.input !== false);
     },
-    isDisabled: function isDisabled() {
+    isDisabled: function() {
       if (this.hasInput()) {
-        return this.input.prop('disabled') === true;
+        return (this.input.prop('disabled') === true);
       }
       return false;
     },
-    disable: function disable() {
+    disable: function() {
       if (this.hasInput()) {
         this.input.prop('disabled', true);
         this.element.trigger({
@@ -998,7 +1116,7 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       }
       return false;
     },
-    enable: function enable() {
+    enable: function() {
       if (this.hasInput()) {
         this.input.prop('disabled', false);
         this.element.trigger({
@@ -1015,13 +1133,14 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       left: 0,
       top: 0
     },
-    mousedown: function mousedown(e) {
+    mousedown: function(e) {
       if (!e.pageX && !e.pageY && e.originalEvent && e.originalEvent.touches) {
         e.pageX = e.originalEvent.touches[0].pageX;
         e.pageY = e.originalEvent.touches[0].pageY;
       }
       e.stopPropagation();
       e.preventDefault();
+
       var target = $(e.target);
 
       //detect the slider and set the limits and callbacks
@@ -1056,15 +1175,27 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       }
       return false;
     },
-    mousemove: function mousemove(e) {
+    mousemove: function(e) {
       if (!e.pageX && !e.pageY && e.originalEvent && e.originalEvent.touches) {
         e.pageX = e.originalEvent.touches[0].pageX;
         e.pageY = e.originalEvent.touches[0].pageY;
       }
       e.stopPropagation();
       e.preventDefault();
-      var left = Math.max(0, Math.min(this.currentSlider.maxLeft, this.currentSlider.left + ((e.pageX || this.mousePointer.left) - this.mousePointer.left)));
-      var top = Math.max(0, Math.min(this.currentSlider.maxTop, this.currentSlider.top + ((e.pageY || this.mousePointer.top) - this.mousePointer.top)));
+      var left = Math.max(
+        0,
+        Math.min(
+          this.currentSlider.maxLeft,
+          this.currentSlider.left + ((e.pageX || this.mousePointer.left) - this.mousePointer.left)
+        )
+      );
+      var top = Math.max(
+        0,
+        Math.min(
+          this.currentSlider.maxTop,
+          this.currentSlider.top + ((e.pageY || this.mousePointer.top) - this.mousePointer.top)
+        )
+      );
       this.currentSlider.guide.left = left + 'px';
       this.currentSlider.guide.top = top + 'px';
       if (this.currentSlider.callLeft) {
@@ -1076,7 +1207,12 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       // Change format dynamically
       // Only occurs if user choose the dynamic format by
       // setting option format to false
-      if (this.options.format === false && (this.currentSlider.callTop === 'setAlpha' || this.currentSlider.callLeft === 'setAlpha')) {
+      if (
+        this.options.format === false &&
+        (this.currentSlider.callTop === 'setAlpha' ||
+          this.currentSlider.callLeft === 'setAlpha')
+      ) {
+
         // Converting from hex / rgb to rgba
         if (this.color.value.a !== 1) {
           this.format = 'rgba';
@@ -1090,13 +1226,14 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
         }
       }
       this.update(true);
+
       this.element.trigger({
         type: 'changeColor',
         color: this.color
       });
       return false;
     },
-    mouseup: function mouseup(e) {
+    mouseup: function(e) {
       e.stopPropagation();
       e.preventDefault();
       $(window.document).off({
@@ -1107,16 +1244,16 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       });
       return false;
     },
-    change: function change(e) {
+    change: function(e) {
       this.keyup(e);
     },
-    keyup: function keyup(e) {
-      if (e.keyCode === 38) {
+    keyup: function(e) {
+      if ((e.keyCode === 38)) {
         if (this.color.value.a < 1) {
           this.color.value.a = Math.round((this.color.value.a + 0.01) * 100) / 100;
         }
         this.update(true);
-      } else if (e.keyCode === 40) {
+      } else if ((e.keyCode === 40)) {
         if (this.color.value.a > 0) {
           this.color.value.a = Math.round((this.color.value.a - 0.01) * 100) / 100;
         }
@@ -1142,24 +1279,28 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
       });
     }
   };
+
   $.colorpicker = Colorpicker;
-  $.fn.colorpicker = function (option) {
+
+  $.fn.colorpicker = function(option) {
     var apiArgs = Array.prototype.slice.call(arguments, 1),
-      isSingleElement = this.length === 1,
+      isSingleElement = (this.length === 1),
       returnValue = null;
-    var $jq = this.each(function () {
+
+    var $jq = this.each(function() {
       var $this = $(this),
         inst = $this.data('colorpicker'),
-        options = (0, _typeof2["default"])(option) === 'object' ? option : {};
+        options = ((typeof option === 'object') ? option : {});
+
       if (!inst) {
         inst = new Colorpicker(this, options);
         $this.data('colorpicker', inst);
       }
+
       if (typeof option === 'string') {
         if ($.isFunction(inst[option])) {
           returnValue = inst[option].apply(inst, apiArgs);
-        } else {
-          // its a property ?
+        } else { // its a property ?
           if (apiArgs.length) {
             // set property
             inst[option] = apiArgs[0];
@@ -1172,5 +1313,7 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
     });
     return isSingleElement ? returnValue : $jq;
   };
+
   $.fn.colorpicker.constructor = Colorpicker;
-});
+
+}));
