@@ -32,38 +32,43 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <table border="1">
-                            <tr>
-                                <td>Id</td>
-                                <td>Nombre</td>
-                                <td>Usuario</td>
-                                <td>opciones</td>
-                            </tr>
-                            <% datos.forEach(element=> { %>
+                        <!-- <table border="1"> -->
+                        <table id="tblusurio" class="table table-bordered table-striped">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <%= element.ID %>
-                                    </td>
-                                    <td>
-                                        <%= element.nombre %>
-                                    </td>
-                                    <td>
-                                        <%= element.USUARIO %>
-                                    </td>
-                                    <td>
-                                        <button type="button" onclick="modificar(event);" class="btn btn-warning"
-                                            data-toggle="modal" data-target="#modal-modificar">
-                                            modificar
-                                        </button>
-                                        <button type="button" onclick="eliminar(event);" class="btn btn-danger">
-                                            eliminar
-                                        </button>
-                                        <button type="button" onclick="reporte(event);" class ="btn btn-success">
-                                            Reporte
-                                        </button>
-                                    </td>
+                                    <th>Id</th>
+                                    <th>Nombre</th>
+                                    <th>Usuario</th>
+                                    <th>opciones</th>
                                 </tr>
+                            </thead>
+                            <tbody>
+                                <% datos.forEach(element=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= element.ID %>
+                                        </td>
+                                        <td>
+                                            <%= element.nombre %>
+                                        </td>
+                                        <td>
+                                            <%= element.USUARIO %>
+                                        </td>
+                                        <td>
+                                            <button type="button" onclick="modificar(event);" class="btn btn-warning"
+                                                data-toggle="modal" data-target="#modal-modificar">
+                                                modificar
+                                            </button>
+                                            <button type="button" onclick="eliminar(event);" class="btn btn-danger">
+                                                eliminar
+                                            </button>
+                                            <button type="button" onclick="reporte(event);" class="btn btn-success">
+                                                Reporte
+                                            </button>
+                                        </td>
+                                    </tr>
                                 <% }); %>
+                            </tbody>
                         </table>
                     </div>
                     <!-- /.box-body -->
@@ -73,7 +78,6 @@
                     <!-- /.box-footer-->
                 </div>
                 <!-- /.box -->
-
             </section>
             <input type="hidden" id="iduser">
             <!-- /.content -->
@@ -221,11 +225,21 @@
                             }
                         })
                 };
-                const reporte = (event)=>{
+                const reporte = (event) => {
+                    const id = event.target.parentElement.parentElement.children[0].innerText;
                     const nombre = event.target.parentElement.parentElement.children[1].innerText;
                     const reporte = new jsPDF();
-                    reporte.text(10,10,"es te mi reporte");
-                    reporte.text(10,20,`Hola soy goku y usted es: ${nombre}`);
+
+                    let pageWidth = reporte.internal.pageSize.width;
+                    reporte.setLineWidth(1);
+                    // Línea superior
+                    reporte.line(10, 10, pageWidth - 10, 10);
+                    let fecha = new Date();
+                    let fila = 40;
+                    reporte.text(10, fila, "es te mi reporte");
+                    reporte.text(10, fila += 10, `su id es: ${id}`);
+                    reporte.text(10, fila += 10, `Hola soy goku y usted es: ${nombre}`);
+                    reporte.text(10, 100, `Fecha y hora de la impresion: ${fecha}`);
                     reporte.save("reporteibsoft.pdf");
                 }
             </script>
